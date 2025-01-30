@@ -60,9 +60,8 @@ fun ProductItemWithDescription(product: Product) {
                     )
                     .fillMaxWidth()
             ) {
-                product.image?.let { painterResource(id = it) }?.let {
                     Image(
-                        painter = it,
+                        painter = painterResource(id = R.drawable.placeholder),
                         contentDescription = "Imagem do Produto",
                         Modifier
                             .size(imageSize)
@@ -73,7 +72,6 @@ fun ProductItemWithDescription(product: Product) {
                         contentScale = ContentScale.Crop
                     )
                 }
-            }
             Spacer(modifier = Modifier.height(imageSize / 2))
             Column(
                 Modifier
@@ -117,7 +115,7 @@ private fun ProductItemWithDescriptionPreview() {
         product = Product(
             "Produto 1",
             (14.00).toBigDecimal(),
-            R.drawable.ic_launcher_foreground,
+            R.drawable.placeholder.toString(),
             "Descrição do Produto 1"
         )
     )
