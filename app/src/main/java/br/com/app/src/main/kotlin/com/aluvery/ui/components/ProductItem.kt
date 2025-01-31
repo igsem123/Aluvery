@@ -1,6 +1,5 @@
 package br.com.app.src.main.kotlin.com.aluvery.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,9 +29,12 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.app.src.main.kotlin.com.aluvery.R
+import br.com.app.src.main.kotlin.com.aluvery.model.Product
+import coil3.compose.AsyncImage
+import java.math.BigDecimal
 
 @Composable
-fun ProductItem() {
+fun ProductItem(product: Product) {
     Surface(
         shape = RoundedCornerShape(15.dp),
         shadowElevation = 4.dp
@@ -56,15 +58,16 @@ fun ProductItem() {
                     )
                     .fillMaxWidth()
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.placeholder),
+                AsyncImage(
+                    model = product.image,
                     contentDescription = "Imagem do Produto",
                     Modifier
                         .size(imageSize)
                         .offset(y = imageSize / 2)
                         .clip(shape = CircleShape)
                         .background(Color.White)
-                        .align(alignment = Alignment.BottomCenter)
+                        .align(alignment = Alignment.BottomCenter),
+                    placeholder = painterResource(id = R.drawable.placeholder)
                 )
             }
             Spacer(modifier = Modifier.height(imageSize / 2))
@@ -90,5 +93,5 @@ fun ProductItem() {
 @Preview
 @Composable
 private fun ProductItemPreview() {
-    ProductItem()
+    ProductItem(Product("Produto", BigDecimal("15,99")))
 }
