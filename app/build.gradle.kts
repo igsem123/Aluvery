@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation("io.coil-kt.coil3:coil-compose:3.0.4")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
+    implementation ("androidx.compose.material:material-icons-extended:1.7.7")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

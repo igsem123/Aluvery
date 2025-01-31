@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import br.com.app.src.main.kotlin.com.aluvery.R
 import br.com.app.src.main.kotlin.com.aluvery.extensions.toBrazilianCurrency
 import br.com.app.src.main.kotlin.com.aluvery.model.Product
+import br.com.app.src.main.kotlin.com.aluvery.ui.theme.NeonOrange
 import coil3.compose.AsyncImage
 
 @Composable
@@ -98,7 +99,7 @@ fun ProductItemWithDescription(product: Product) {
                 Text(
                     text = product.description,
                     Modifier
-                        .background(color = Color(0xFFFF5C00))
+                        .background(color = NeonOrange)
                         .padding(16.dp)
                         .fillMaxWidth(),
                     fontSize = 14.sp,
