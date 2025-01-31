@@ -3,9 +3,12 @@ package br.com.app.src.main.kotlin.com.aluvery.ui.components
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -15,11 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.app.src.main.kotlin.com.aluvery.R
 import br.com.app.src.main.kotlin.com.aluvery.model.Product
 import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleProducts
 import br.com.app.src.main.kotlin.com.aluvery.ui.theme.AluveryTheme
-import java.math.BigDecimal
 
 @Composable
 fun ProductsSection(title: String, products: List<Product>) {
@@ -30,18 +31,17 @@ fun ProductsSection(title: String, products: List<Product>) {
             fontSize = 20.sp,
             fontWeight = FontWeight.W400
         )
-        Row(
+        LazyRow(
             Modifier
                 .padding(
                     top = 8.dp
                 )
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
+                .fillMaxWidth(),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            products.forEach { product ->
-                ProductItemWithDescription(product)
+            items(products.size) {
+                ProductItemWithDescription(products[it])
             }
         }
     }

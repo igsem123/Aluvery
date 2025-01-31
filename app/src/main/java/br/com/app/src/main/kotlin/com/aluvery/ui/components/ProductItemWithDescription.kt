@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import br.com.app.src.main.kotlin.com.aluvery.R
 import br.com.app.src.main.kotlin.com.aluvery.extensions.toBrazilianCurrency
 import br.com.app.src.main.kotlin.com.aluvery.model.Product
+import coil3.compose.AsyncImage
 
 @Composable
 fun ProductItemWithDescription(product: Product) {
@@ -60,18 +61,19 @@ fun ProductItemWithDescription(product: Product) {
                     )
                     .fillMaxWidth()
             ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.placeholder),
-                        contentDescription = "Imagem do Produto",
-                        Modifier
-                            .size(imageSize)
-                            .offset(y = imageSize / 2)
-                            .clip(shape = CircleShape)
-                            .background(Color.White)
-                            .align(alignment = Alignment.BottomCenter),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+                AsyncImage(
+                    model = product.image,
+                    contentDescription = "Imagem do Produto",
+                    Modifier
+                        .size(imageSize)
+                        .offset(y = imageSize / 2)
+                        .clip(shape = CircleShape)
+                        .background(Color.White)
+                        .align(alignment = Alignment.BottomCenter),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.placeholder)
+                )
+            }
             Spacer(modifier = Modifier.height(imageSize / 2))
             Column(
                 Modifier
