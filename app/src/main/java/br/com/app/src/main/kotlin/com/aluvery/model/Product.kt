@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import br.com.app.src.main.kotlin.com.aluvery.R
 import java.math.BigDecimal
 
-class Product(
+data class Product(
     val name: String,
     val price: BigDecimal,
     val image: String? = null,
