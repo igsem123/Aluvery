@@ -13,4 +13,11 @@ val Pink40 = Color(0xFF7D5260)
 
 val Teal200 = Color(0xFF03DAC5)
 
+val SmokyBlack = Color(0xFF141301)
+val Platinum = Color(0xFFe5e7e6)
+
+val DarkRed = Color(0xFFb80c09)
 val NeonOrange = Color(0xFFFF5C00)
+val LightOrange = Color(0xFFFF6D2A)
+val PastelOrange = Color(0xFFff8c42)
+val DarkOrange = Color(0xFFEE4A00)

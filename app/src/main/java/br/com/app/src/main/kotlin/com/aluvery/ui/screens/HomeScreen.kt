@@ -19,6 +19,7 @@ import br.com.app.src.main.kotlin.com.aluvery.model.Product
 import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleProducts
 import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleSections
 import br.com.app.src.main.kotlin.com.aluvery.ui.components.CardProductItem
+import br.com.app.src.main.kotlin.com.aluvery.ui.components.ProductItemWithDescription
 import br.com.app.src.main.kotlin.com.aluvery.ui.components.ProductsSection
 import br.com.app.src.main.kotlin.com.aluvery.ui.components.SearchTextField
 
@@ -30,8 +31,9 @@ fun HomeScreen(
 ) {
     Column {
         var text by remember { mutableStateOf(searchText) }
+        var showDialog = remember { mutableStateOf(false) }
 
-        SearchTextField(searchText = searchText, onSearchChange = { text = it })
+        SearchTextField(searchText = text, onSearchChange = { text = it })
 
         val filteredProducts = remember(text) {
             if (text.isNotBlank()) {

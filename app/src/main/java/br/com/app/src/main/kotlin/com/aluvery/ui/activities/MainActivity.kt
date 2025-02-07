@@ -1,4 +1,4 @@
-package br.com.app.src.main.kotlin.com.aluvery
+package br.com.app.src.main.kotlin.com.aluvery.ui.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
