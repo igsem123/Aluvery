@@ -19,7 +19,6 @@ import br.com.app.src.main.kotlin.com.aluvery.model.Product
 import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleProducts
 import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleSections
 import br.com.app.src.main.kotlin.com.aluvery.ui.components.CardProductItem
-import br.com.app.src.main.kotlin.com.aluvery.ui.components.ProductItemWithDescription
 import br.com.app.src.main.kotlin.com.aluvery.ui.components.ProductsSection
 import br.com.app.src.main.kotlin.com.aluvery.ui.components.SearchTextField
 
