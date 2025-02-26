@@ -7,21 +7,24 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +32,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.app.src.main.kotlin.com.aluvery.R
+import br.com.app.src.main.kotlin.com.aluvery.dao.ProductDao
 import br.com.app.src.main.kotlin.com.aluvery.model.Product
 import br.com.app.src.main.kotlin.com.aluvery.ui.theme.AluveryTheme
 import br.com.app.src.main.kotlin.com.aluvery.ui.theme.NeonOrange
@@ -53,31 +58,44 @@ import coil3.compose.AsyncImage
 import java.math.BigDecimal
 
 class ProductFormActivity : ComponentActivity() {
+
+    private val dao = ProductDao() // Inicializa o DAO
+
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AluveryTheme {
                 Surface {
                     Scaffold (
-                        bottomBar = {
-                            BottomAppBar (
-                                actions = {
-                                    IconButton(onClick = { /* do something */ }) {
+                        topBar = {
+                            TopAppBar(
+                                title = {
+                                    Text("Adicionar produto")
+                                },
+                                navigationIcon = {
+                                    IconButton(onClick = {
+                                        finish()
+                                    }) {
                                         Icon(
-                                            Icons.Rounded.Home,
-                                            contentDescription = "Voltar",
-                                            tint = NeonOrange
+                                            Icons.Rounded.ArrowBack,
+                                            contentDescription = "Botão Para Voltar",
+                                            tint = NeonOrange,
+                                            modifier = Modifier.size(40.dp)
                                         )
                                     }
-                                },
+                                }
                             )
                         }
                     ) { paddingValues ->
-                        Box(
-                            modifier = Modifier
-                                .padding(paddingValues)
-                        ) {
-                            ProductFormScreen()
+                        Box(modifier = Modifier.padding(paddingValues)) {
+                            ProductFormScreen(
+                                onSaveClick = { product ->
+                                    dao.save(product)
+                                    Log.d("ProductFormActivity", "Produto salvo: $product")
+                                    finish()
+                                }
+                            )
                         }
                     }
                 }
@@ -87,7 +105,7 @@ class ProductFormActivity : ComponentActivity() {
 }
 
 @Composable
-fun ProductFormScreen(modifier: Modifier = Modifier) {
+fun ProductFormScreen(modifier: Modifier = Modifier, onSaveClick: (Product) -> Unit = {}) {
     Column(
         Modifier
             .fillMaxSize()
@@ -97,12 +115,20 @@ fun ProductFormScreen(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(modifier = Modifier)
+        Icon(
+            painter = painterResource(id = R.drawable.ic_app_food_vector),
+            contentDescription = "Imagem do produto",
+            Modifier
+                .fillMaxWidth()
+                .height(200.dp),
+            tint = NeonOrange
+        )
+        Spacer(modifier = Modifier)
         Text(
             text = "Criando o produto",
             Modifier.fillMaxWidth(),
             fontSize = 28.sp
         )
-
         var url by remember { mutableStateOf("") }
         if (url.isNotBlank()) {
             AsyncImage(
@@ -209,7 +235,7 @@ fun ProductFormScreen(modifier: Modifier = Modifier) {
                     image = url,
                     description = description
                 )
-                Log.i("ProductFormScreen", "ProductFormScreen: $product")
+                onSaveClick(product);
             },
             modifier = Modifier
                 .width(200.dp),
