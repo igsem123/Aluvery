@@ -18,38 +18,63 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.app.src.main.kotlin.com.aluvery.dao.ProductDao
+import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleCandies
+import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleDrinks
 import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleSections
 import br.com.app.src.main.kotlin.com.aluvery.ui.screens.HomeScreen
+import br.com.app.src.main.kotlin.com.aluvery.ui.screens.HomeScreenUiState
 import br.com.app.src.main.kotlin.com.aluvery.ui.theme.AluveryTheme
 import br.com.app.src.main.kotlin.com.aluvery.ui.theme.NeonOrange
 
 class MainActivity : ComponentActivity() {
 
-    private val dao = ProductDao()
+    private val dao = ProductDao() // Inicializa o DAO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             App(
                 onFabClick = {
-                    startActivity(Intent(this, ProductFormActivity::class.java))
+                    startActivity(
+                        Intent(this, ProductFormActivity::class.java)
+                    )
                 },
                 onHomeClick =
                 {
-                    startActivity(Intent(this, MainActivity::class.java))
+                    startActivity(
+                        Intent(this, MainActivity::class.java)
+                    )
                 }
-            )
+            ) {
+                val sections = mapOf(
+                    "Destaques" to dao.products().take(5),
+                    "Todos os produtos" to dao.products(),
+                    "Bebidas" to sampleDrinks,
+                    "Doces" to sampleCandies
+                )
+                val state = remember {
+                    HomeScreenUiState()
+                }
+
+                HomeScreen(sections = sections, state = state)
+            }
         }
     }
 }
 
 @Composable
-fun App(onFabClick: () -> Unit = {}, onHomeClick: () -> Unit = {}) {
+fun App(
+    onFabClick: () -> Unit = {},
+    onHomeClick: () -> Unit = {},
+    content: @Composable () -> Unit = {}
+) {
     AluveryTheme {
         Surface {
             Scaffold(
@@ -81,11 +106,19 @@ fun App(onFabClick: () -> Unit = {}, onHomeClick: () -> Unit = {}) {
                 },
             ) { paddingValues ->
                 Box(modifier = Modifier.padding(paddingValues)) {
-                    HomeScreen(
-                        sampleSections
-                    )
+                    content()
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun AppPreview() {
+    App {
+        HomeScreen(
+            sections = sampleSections
+        )
     }
 }

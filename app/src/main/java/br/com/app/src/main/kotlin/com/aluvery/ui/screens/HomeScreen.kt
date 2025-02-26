@@ -22,26 +22,40 @@ import br.com.app.src.main.kotlin.com.aluvery.ui.components.CardProductItem
 import br.com.app.src.main.kotlin.com.aluvery.ui.components.ProductsSection
 import br.com.app.src.main.kotlin.com.aluvery.ui.components.SearchTextField
 
-@Composable
-fun HomeScreen(
-    sections: Map<String,
-            List<Product>> = sampleSections,
-    searchText: String = ""
-) {
-    Column {
-        var text by remember { mutableStateOf(searchText) }
-        var showDialog = remember { mutableStateOf(false) }
+class HomeScreenUiState(searchText: String = "") {
+    var text by mutableStateOf(searchText)
+        private set
 
-        SearchTextField(searchText = text, onSearchChange = { text = it })
-
-        val filteredProducts = remember(text) {
+    val filteredProducts
+        get() =
             if (text.isNotBlank()) {
-                sampleProducts.filter {
-                    it.name.contains(text, ignoreCase = true) ||
-                            it.description.orEmpty().contains(text, ignoreCase = true)
+                sampleProducts.filter { product ->
+                    product.name.contains(text, ignoreCase = true) ||
+                            product.description?.contains(text, ignoreCase = true) ?: false
                 }
             } else emptyList()
-        }
+
+    fun isShowSections(): Boolean {
+        return text.isBlank()
+    }
+
+    val onSearchChange: (String) -> Unit = { searchText ->
+        text = searchText
+    }
+}
+
+@Composable
+fun HomeScreen(
+    sections: Map<String, List<Product>> = sampleSections,
+    state: HomeScreenUiState = HomeScreenUiState(),
+) {
+    Column {
+        val filteredProducts = remember(state.text) { state.filteredProducts }
+
+        SearchTextField(
+            searchText = state.text,
+            onSearchChange = state.onSearchChange
+        )
 
         LazyColumn(
             Modifier
@@ -50,7 +64,7 @@ fun HomeScreen(
             horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
             contentPadding = PaddingValues(bottom = 16.dp),
         ) {
-            if (text.isBlank()) {
+            if (state.isShowSections()) {
                 sections.forEach { (title, products) ->
                     item {
                         ProductsSection(title, products)
@@ -69,9 +83,8 @@ fun HomeScreen(
     }
 }
 
-
 @Preview(showSystemUi = true)
 @Composable
 private fun HomeScreenPreview() {
-    HomeScreen(sampleSections, searchText = "")
+    HomeScreen(sampleSections, state = HomeScreenUiState(searchText = "Hamburguer"))
 }
