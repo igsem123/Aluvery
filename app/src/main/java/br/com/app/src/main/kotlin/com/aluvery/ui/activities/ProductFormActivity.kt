@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,9 +13,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -25,14 +36,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.app.src.main.kotlin.com.aluvery.R
 import br.com.app.src.main.kotlin.com.aluvery.model.Product
 import br.com.app.src.main.kotlin.com.aluvery.ui.theme.AluveryTheme
+import br.com.app.src.main.kotlin.com.aluvery.ui.theme.NeonOrange
 import coil3.compose.AsyncImage
 import java.math.BigDecimal
 
@@ -42,7 +58,28 @@ class ProductFormActivity : ComponentActivity() {
         setContent {
             AluveryTheme {
                 Surface {
-                    ProductFormScreen()
+                    Scaffold (
+                        bottomBar = {
+                            BottomAppBar (
+                                actions = {
+                                    IconButton(onClick = { /* do something */ }) {
+                                        Icon(
+                                            Icons.Rounded.Home,
+                                            contentDescription = "Voltar",
+                                            tint = NeonOrange
+                                        )
+                                    }
+                                },
+                            )
+                        }
+                    ) { paddingValues ->
+                        Box(
+                            modifier = Modifier
+                                .padding(paddingValues)
+                        ) {
+                            ProductFormScreen()
+                        }
+                    }
                 }
             }
         }
@@ -85,7 +122,12 @@ fun ProductFormScreen(modifier: Modifier = Modifier) {
                 url = it
             },
             Modifier.fillMaxWidth(),
-            label = { Text("URL da imagem") })
+            label = { Text("URL da imagem") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Uri,
+                imeAction = ImeAction.Next
+            )
+        )
 
         var name by remember { mutableStateOf("") }
         TextField(
@@ -95,17 +137,46 @@ fun ProductFormScreen(modifier: Modifier = Modifier) {
                 name = it
             },
             Modifier.fillMaxWidth(),
-            label = { Text("Nome do produto") })
+            label = { Text("Nome do produto") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+                capitalization = KeyboardCapitalization.Words
+            )
+        )
 
         var price by remember { mutableStateOf("") }
+        var isPriceError by remember { mutableStateOf(false) }
         TextField(
             value = price,
-            onValueChange =
-            {
+            onValueChange = {
+                isPriceError = try {
+                    it.toBigDecimal()
+                    false
+                } catch (e: IllegalArgumentException) {
+                    it.isNotEmpty()
+                }
                 price = it
             },
             Modifier.fillMaxWidth(),
-            label = { Text("Preço do produto") })
+            isError = isPriceError,
+            label = {
+                Text("Preço do produto")
+            },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Decimal,
+                imeAction = ImeAction.Next
+            )
+        )
+
+        if (isPriceError) {
+            Text(
+                text = "Preço deve ser um número decimal",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
 
         var description by remember { mutableStateOf("") }
         TextField(
@@ -118,7 +189,11 @@ fun ProductFormScreen(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .heightIn(100.dp),
             maxLines = 4,
-            label = { Text("Descrição do produto") }
+            label = { Text("Descrição do produto") },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Text,
+                capitalization = KeyboardCapitalization.Sentences,
+            )
         )
 
         Button(
@@ -135,7 +210,15 @@ fun ProductFormScreen(modifier: Modifier = Modifier) {
                     description = description
                 )
                 Log.i("ProductFormScreen", "ProductFormScreen: $product")
-            }
+            },
+            modifier = Modifier
+                .width(200.dp),
+            colors = ButtonColors(
+                containerColor = NeonOrange,
+                contentColor = Color.White,
+                disabledContainerColor = Color.Gray,
+                disabledContentColor = Color.Black
+            )
         ) {
             Text("Salvar")
         }
