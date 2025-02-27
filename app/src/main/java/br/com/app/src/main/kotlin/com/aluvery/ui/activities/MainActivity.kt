@@ -18,15 +18,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.app.src.main.kotlin.com.aluvery.dao.ProductDao
-import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleCandies
-import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleDrinks
 import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleSections
 import br.com.app.src.main.kotlin.com.aluvery.ui.screens.HomeScreen
 import br.com.app.src.main.kotlin.com.aluvery.ui.screens.HomeScreenUiState
@@ -53,17 +50,9 @@ class MainActivity : ComponentActivity() {
                     )
                 }
             ) {
-                val sections = mapOf(
-                    "Destaques" to dao.products().take(5),
-                    "Todos os produtos" to dao.products(),
-                    "Bebidas" to sampleDrinks,
-                    "Doces" to sampleCandies
-                )
-                val state = remember {
-                    HomeScreenUiState()
-                }
+                val products = dao.products()
 
-                HomeScreen(sections = sections, state = state)
+                HomeScreen(products = products)
             }
         }
     }
@@ -118,7 +107,7 @@ fun App(
 private fun AppPreview() {
     App {
         HomeScreen(
-            sections = sampleSections
+            state = HomeScreenUiState(searchText = "Hamburguer", sections = sampleSections),
         )
     }
 }
