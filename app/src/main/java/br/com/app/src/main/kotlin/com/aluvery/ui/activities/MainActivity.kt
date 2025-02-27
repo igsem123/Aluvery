@@ -18,24 +18,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.com.app.src.main.kotlin.com.aluvery.dao.ProductDao
-import br.com.app.src.main.kotlin.com.aluvery.model.Product
-import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleCandies
-import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleDrinks
-import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleProducts
 import br.com.app.src.main.kotlin.com.aluvery.sampledata.sampleSections
 import br.com.app.src.main.kotlin.com.aluvery.ui.screens.HomeScreen
 import br.com.app.src.main.kotlin.com.aluvery.ui.screens.HomeScreenUiState
 import br.com.app.src.main.kotlin.com.aluvery.ui.theme.AluveryTheme
 import br.com.app.src.main.kotlin.com.aluvery.ui.theme.NeonOrange
-import kotlin.collections.plus
 
 class MainActivity : ComponentActivity() {
 
@@ -58,44 +51,8 @@ class MainActivity : ComponentActivity() {
                 }
             ) {
                 val products = dao.products()
-                val sections = mapOf(
-                    "Destaques" to dao.products().take(5),
-                    "Todos os produtos" to dao.products(),
-                    "Bebidas" to sampleDrinks,
-                    "Doces" to sampleCandies
-                )
 
-                var text = remember {
-                    mutableStateOf("")
-                }
-
-                fun containsInNameOrDescription() = { product: Product ->
-                    product.name.contains(
-                        text.value,
-                        ignoreCase = true
-                    ) || product.description?.contains(
-                        text.value,
-                        ignoreCase = true
-                    ) == true
-                }
-
-                val filteredProducts = remember(products, text.value) {
-                    if (text.value.isNotBlank()) {
-                        sampleProducts.filter(containsInNameOrDescription()) +
-                                products.filter(containsInNameOrDescription())
-                    } else emptyList()
-                }
-
-                val state = remember(products, text.value) {
-                    HomeScreenUiState(
-                        sections = sections,
-                        filteredProducts = filteredProducts,
-                        searchText = text.value,
-                        onSearchChange = { text.value = it }
-                    )
-                }
-
-                HomeScreen(state = state)
+                HomeScreen(products = products)
             }
         }
     }
