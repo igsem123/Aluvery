@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,9 +34,14 @@ import coil3.compose.AsyncImage
 import java.math.BigDecimal
 
 @Composable
-fun CardProductItem(product: Product, modifier: Modifier = Modifier, elevation: Dp = 4.dp) {
+fun CardProductItem(
+    product: Product,
+    modifier: Modifier = Modifier,
+    elevation: Dp = 4.dp,
+    isExpanded: Boolean = false
+) {
     product.description?.let {
-        var expanded by remember { mutableStateOf(false) }
+        var expanded by rememberSaveable { mutableStateOf(isExpanded) }
 
         Card(
             modifier
@@ -107,7 +113,8 @@ private fun ProductCardPreview() {
             name = "Product name",
             price = BigDecimal("18.89"),
             image = "https://www.example.com/image.jpg",
-        )
+        ),
+        isExpanded = false
     )
 }
 
@@ -120,6 +127,7 @@ private fun ProductCardWithDescriptionPreview() {
             price = BigDecimal("18.89"),
             image = "https://www.example.com/image.jpg",
             description = "Product description"
-        )
+        ),
+        isExpanded = true
     )
 }

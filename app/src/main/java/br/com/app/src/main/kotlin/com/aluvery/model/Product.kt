@@ -1,7 +1,5 @@
 package br.com.app.src.main.kotlin.com.aluvery.model
 
-import androidx.annotation.DrawableRes
-import br.com.app.src.main.kotlin.com.aluvery.R
 import java.math.BigDecimal
 
 data class Product(
