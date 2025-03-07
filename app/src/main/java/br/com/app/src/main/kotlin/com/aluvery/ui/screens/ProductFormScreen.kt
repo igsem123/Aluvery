@@ -1,6 +1,5 @@
 package br.com.app.src.main.kotlin.com.aluvery.ui.screens
 
-import android.icu.text.DecimalFormat
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,16 +15,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,77 +33,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.app.src.main.kotlin.com.aluvery.R
-import br.com.app.src.main.kotlin.com.aluvery.model.Product
+import br.com.app.src.main.kotlin.com.aluvery.ui.states.ProductFormUiState
 import br.com.app.src.main.kotlin.com.aluvery.ui.theme.AluveryTheme
 import br.com.app.src.main.kotlin.com.aluvery.ui.theme.NeonOrange
+import br.com.app.src.main.kotlin.com.aluvery.ui.viewmodels.ProductFormScreenViewModel
 import coil3.compose.AsyncImage
-import java.math.BigDecimal
-
-class ProductFormUiState(
-    val url: String = "",
-    val name: String = "",
-    val price: String = "",
-    val description: String = "",
-    val isShowPreview: Boolean = url.isNotBlank(),
-    val onUrlChange: (String) -> Unit = {},
-    val onNameChange: (String) -> Unit = {},
-    val onDescriptionChange: (String) -> Unit = {},
-    val onPriceChange: (String) -> Unit = {},
-)
 
 @Composable
 fun ProductFormScreen(
-    onSaveClick: (Product) -> Unit = {}
+    viewModel: ProductFormScreenViewModel,
+    onSaveClick: () -> Unit = {}
 ) {
-    var name by rememberSaveable { mutableStateOf("") }
-    var url by rememberSaveable { mutableStateOf("") }
-    var price by rememberSaveable { mutableStateOf("") }
-    var description by rememberSaveable { mutableStateOf("") }
-    val formatter = remember {
-        DecimalFormat("#.##")
-    }
-    val isPriceError by remember(price) {
-        mutableStateOf(price.toBigDecimalOrNull() == null)
-    }
-
+    val state by viewModel.uiState.collectAsState()
     ProductFormScreen(
-        state = ProductFormUiState(
-            url = url,
-            name = name,
-            price = price,
-            description = description,
-            onUrlChange = {
-                url = it
-            },
-            onNameChange = {
-                name = it
-            },
-            onPriceChange = {
-                try {
-                    price = formatter.format(BigDecimal(it))
-                } catch (e: IllegalArgumentException) {
-                    if (it.isBlank()) {
-                        price = it
-                    }
-                }
-            },
-            onDescriptionChange = {
-                description = it
-            },
-        ),
+        state = state,
         onSaveClick = {
-            val convertedPrice = try {
-                BigDecimal(price)
-            } catch (e: NumberFormatException) {
-                BigDecimal.ZERO
-            }
-            val product = Product(
-                name = name,
-                image = url,
-                price = convertedPrice,
-                description = description
-            )
-            onSaveClick(product)
+            viewModel.save()
+            onSaveClick()
         }
     )
 }
